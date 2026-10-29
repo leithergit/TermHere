@@ -44,3 +44,10 @@
 
 - 新增 `README.md`（英文）与 `README.zh-CN.md`（中文），互相链接：用途、安装、排障、卸载、原理、构建
 - 发现 `docs/AuthKey_TCK2T6739Z.p8`（公证私钥）在项目目录内；已在 `.gitignore` 加 `*.p8`，建议用户移出项目
+
+## 2026-10-28（续）— 发布到 GitHub
+
+- 远程 `git@github.com:leithergit/TermHere.git`（公开；原 main 仅 LICENSE）。本地分支基于 origin/main，提交 8f38730 并推送 `feat/finder-sync`
+- PR #1 https://github.com/leithergit/TermHere/pull/1 已创建；**合并被自动权限模式拦截，待用户审查后手动合并**
+- Release v1.0 https://github.com/leithergit/TermHere/releases/tag/v1.0 ，附 TermHere-1.0.dmg；匿名下载 SHA-256 与本地一致
+- 未提交：`docs/requirements.txt`（与本项目无关）、本 DEVLOG 追加
