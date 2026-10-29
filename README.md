@@ -39,6 +39,7 @@ After setup you don't need to keep TermHere open; the Finder extension runs on i
 | Menu items appear twice | Two copies of the extension are registered, e.g. one in a build folder. Run `scripts/uninstall.sh`, then reinstall from the DMG. |
 | Nothing happens on click | Allow Automation under *System Settings → Privacy & Security → Automation → TermHere → iTerm*. Then click **Reinstall** in the TermHere app. |
 | A notification says TermHere failed | Open the TermHere app. The status section and **Test** button show the cause. |
+| Menu or extension missing from System Settings | Make sure you launch TermHere from Applications, not from the DMG or a build folder. Quit any other copies, then open `/Applications/TermHere.app` once. |
 
 To see logs, run `log stream --predicate 'subsystem BEGINSWITH "com.xionggaoli.termhere"'`.
 

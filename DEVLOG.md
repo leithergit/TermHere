@@ -44,3 +44,10 @@
 
 - 新增 `README.md`（英文）与 `README.zh-CN.md`（中文），互相链接：用途、安装、排障、卸载、原理、构建
 - 发现 `docs/AuthKey_TCK2T6739Z.p8`（公证私钥）在项目目录内；已在 `.gitignore` 加 `*.p8`，建议用户移出项目
+
+## 2026-10-28（续）— 修复：扩展在系统设置中不出现（v1.0.1）
+
+- 根因：PlugInKit 对同一 bundle ID 只保留一条登记，最后启动的副本胜出；用户经 Spotlight 启动了 build/ 副本。另 `uninstall.sh` 的 `pluginkit -e ignore` 跨重装持久化
+- 修复：uninstall 改 `-e default`；App 启动时检查位置（InstallLocation，10 个新测试），不在「应用程序」则提示并可交接到 /Applications 副本（需 createsNewApplicationInstance）；在「应用程序」时 `pluginkit -a` 自身扩展
+- 验证：44 测试全绿；运行时验证弹窗、交接、登记切换；tester PASS（遗留 LOW：大小写/符号链接、onAppear 重复弹窗、pluginkit 无超时）
+- 版本 1.0.1 (2)

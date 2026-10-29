@@ -39,6 +39,7 @@ iTerm2 没运行时会先启动它，并直接用它启动时开的那个窗口�
 | 菜单项出现了两遍 | 系统里登记了两份扩展，比如构建目录里还有一份。运行 `scripts/uninstall.sh`，再从 DMG 重新安装。 |
 | 点了没反应 | 到「系统设置 → 隐私与安全性 → 自动化 → TermHere」里允许控制 iTerm，然后在 TermHere 里点 **Reinstall**。 |
 | 收到 TermHere 出错的通知 | 打开 TermHere App，状态区和 **Test** 按钮会显示原因。 |
+| 菜单或扩展未出现在系统设置中 | 请确认从“应用程序”文件夹启动 TermHere，而不是从 DMG 或构建目录。退出其他副本，然后打开一次 `/Applications/TermHere.app`。 |
 
 查看日志：运行 `log stream --predicate 'subsystem BEGINSWITH "com.xionggaoli.termhere"'`。
 
