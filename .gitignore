@@ -1,0 +1,10 @@
+.remember/
+build/
+*.xcodeproj/
+DerivedData/
+.build/
+.DS_Store
+.swiftpm/
+
+# secrets
+*.p8
