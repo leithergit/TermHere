@@ -2,10 +2,21 @@ import SwiftUI
 import FinderSync
 import TermHereCore
 
+private let installedCopyURL = URL(fileURLWithPath: "/Applications/TermHere.app")
+
 struct ContentView: View {
     @State private var extensionEnabled = FIFinderSyncController.isExtensionEnabled
     @State private var scriptInstalled = ScriptInstaller.isInstalled
     @State private var message: String?
+    @State private var inApplications = InstallLocation.isInApplicationsFolder(
+        bundleURL: Bundle.main.bundleURL, homeDirectory: FileManager.default.homeDirectoryForCurrentUser)
+    @State private var showMoveAlert = false
+
+    private var currentPath: String { Bundle.main.bundleURL.standardizedFileURL.path }
+    private var otherCopyExists: Bool {
+        FileManager.default.fileExists(atPath: installedCopyURL.path)
+            && installedCopyURL.standardizedFileURL.path != currentPath
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -13,6 +24,13 @@ struct ContentView: View {
             Text("Adds “New iTerm2 Window Here” and “New iTerm2 Tab Here” to Finder's right-click menu.")
                 .foregroundStyle(.secondary)
 
+            if !inApplications {
+                HStack(alignment: .top) {
+                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                    Text("Location: \(currentPath) (not in Applications)")
+                        .textSelection(.enabled)
+                }
+            }
             row("Finder extension", ok: extensionEnabled,
                 okText: "Enabled", badText: "Disabled") {
                 Button("Open Extension Settings") {
@@ -36,6 +54,25 @@ struct ContentView: View {
         .onAppear {
             reinstall()
             refresh()
+            if inApplications {
+                PluginRegistrar.register { refresh() }
+            } else {
+                showMoveAlert = true
+            }
+        }
+        .alert("Move TermHere to Applications", isPresented: $showMoveAlert) {
+            if otherCopyExists {
+                Button("Open the Copy in Applications") { openInstalledCopy() }
+                    .keyboardShortcut(.defaultAction)
+            } else {
+                Button("Show in Finder") {
+                    NSWorkspace.shared.activateFileViewerSelecting([Bundle.main.bundleURL])
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+            Button("Continue Here", role: .cancel) {}
+        } message: {
+            Text("The Finder extension only works reliably when TermHere runs from the Applications folder.\n\nCurrent location:\n\(currentPath)")
         }
     }
 
@@ -47,6 +84,23 @@ struct ContentView: View {
             Text("\(title): \(ok ? okText : badText)")
             Spacer()
             action()
+        }
+    }
+
+    private func openInstalledCopy() {
+        // Same bundle ID as this process: without a new instance, LaunchServices
+        // just "opens" us again and we'd terminate with no copy running.
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.createsNewApplicationInstance = true
+        NSWorkspace.shared.openApplication(at: installedCopyURL,
+                                           configuration: configuration) { _, error in
+            DispatchQueue.main.async {
+                if let error {
+                    message = "Cannot open the copy in Applications: \(error.localizedDescription)"
+                } else {
+                    NSApp.terminate(nil)
+                }
+            }
         }
     }
 
