@@ -50,8 +50,10 @@ fi
 # Quit the host app if it is running.
 run osascript -e "tell application id \"$APP_ID\" to quit" 2>/dev/null
 
-# Disable and unregister the Finder extension.
-run pluginkit -e ignore -i "$EXT_ID"
+# Reset the user's enable/disable choice and unregister the Finder extension.
+# Not "-e ignore": that election is keyed by bundle ID and survives reinstall,
+# leaving a fresh install disabled until the user re-enables it.
+run pluginkit -e default -i "$EXT_ID"
 for p in "${EXT_PATHS[@]}"; do
   run pluginkit -r "$p"
 done
